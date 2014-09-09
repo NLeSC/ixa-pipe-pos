@@ -123,9 +123,10 @@ public class CLI {
    */
   public static void main(final String[] args) throws IOException,
       JDOMException {
-
+    System.err.println("Timestamp EHU-pos start in-command: " + System.currentTimeMillis());
     CLI cmdLine = new CLI();
     cmdLine.parseCLI(args);
+    System.err.println("Timestamp EHU-pos end in-command: " + System.currentTimeMillis());
   }
 
   /**
@@ -208,9 +209,11 @@ public class CLI {
       KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
           "terms", "ixa-pipe-pos-" + lang, version);
 
+      System.err.println("Timestamp EHU-pos start work: " + System.currentTimeMillis());
       newLp.setBeginTimestamp();
       annotator.annotatePOSToKAF(kaf, lemmatizer);
       newLp.setEndTimestamp();
+      System.err.println("Timestamp EHU-pos end work: " + System.currentTimeMillis());
       bwriter.write(kaf.toString());
     } else {
       // annotate to CoNLL
