@@ -137,8 +137,9 @@ public class CLI {
    * @throws IOException
    *           exception if problems with the incoming data
    * @throws JWNLException
+   * @throws JDOMException
    */
-  public final void parseCLI(final String[] args) throws IOException {
+  public final void parseCLI(final String[] args) throws IOException, JDOMException {
     try {
       parsedArguments = argParser.parseArgs(args);
       System.err.println("CLI options: " + parsedArguments);
@@ -167,9 +168,11 @@ public class CLI {
    *          the output stream
    * @throws IOException
    *           the exception if not input is provided
+   * @throws JDOMException
+   *           as the input is a NAF file, a JDOMException could be thrown
    */
   public final void annotate(final InputStream inputStream,
-      final OutputStream outputStream) throws IOException {
+      final OutputStream outputStream) throws IOException, JDOMException {
 
     int beamsize = parsedArguments.getInt("beamsize");
     String model;
@@ -191,6 +194,8 @@ public class CLI {
     } else {
       lang = parsedArguments.getString("lang");
     }
+    System.err.println("Timestamp EHU-pos start setup: " + System.currentTimeMillis());
+
     DictionaryLemmatizer lemmatizer = null;
     // TODO static loading of dictionaries
     Resources resourceRetriever = new Resources();
@@ -204,6 +209,7 @@ public class CLI {
       lemmatizer = new MorfologikLemmatizer(dictLemmatizer, lang);
     }
     Annotate annotator = new Annotate(lang, model, beamsize);
+    System.err.println("Timestamp EHU-pos end setup: " + System.currentTimeMillis());
     // annotate to KAF
     if (parsedArguments.getBoolean("nokaf")) {
       KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
